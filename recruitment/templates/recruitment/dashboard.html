@@ -1,0 +1,53 @@
+{% extends 'recruitment/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12 text-center py-5 bg-white rounded shadow-sm border">
+        <h1 class="fw-bold text-primary">Sistem Pendukung Keputusan</h1>
+        <p class="text-muted fs-5">Seleksi Pelamar Kerja Menggunakan Metode Profile Matching</p>
+    </div>
+</div>
+
+<div class="row g-4 text-center">
+    <!-- Card Total Pelamar -->
+    <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm bg-primary text-white py-4">
+            <div class="card-body">
+                <h1 class="display-3 fw-bold">{{ total_pelamar }}</h1>
+                <p class="card-text fs-5">Total Pelamar Terdaftar</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Card Total Kriteria -->
+    <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm bg-success text-white py-4">
+            <div class="card-body">
+                <h1 class="display-3 fw-bold">{{ total_kriteria }}</h1>
+                <p class="card-text fs-5">Kriteria Penilaian Aktif</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BAGIAN DUA OPSI TOMBOL -->
+<div class="row mt-5 g-3 justify-content-center">
+    <div class="col-md-4">
+        <a href="/ranking/" class="btn btn-primary btn-lg w-100 py-3 shadow fw-bold">
+            Lihat Hasil Ranking
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="/admin/" target="_blank" class="btn btn-dark btn-lg w-100 py-3 shadow fw-bold">
+            Masuk Halaman Admin
+        </a>
+    </div>
+</div>
+<div class="row mt-5 g-3 justify-content-center">
+    <div class="col-md-4">
+        <a href="/pendaftaran/" class="btn btn-success btn-lg w-100 py-3 shadow fw-bold">
+            Pendaftaran Kerja
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'recruitment/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold">Hasil Perhitungan Profile Matching</h3>
+            <button class="btn btn-primary btn-sm" onclick="window.print()">Cetak Laporan</button>
+        </div>
+
+        <div class="card p-4">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Nama Pelamar</th>
+                            <th class="text-center">NCF (60%)</th>
+                            <th class="text-center">NSF (40%)</th>
+                            <th class="text-center">Skor Akhir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in ranking %}
+                        <tr>
+                            <td><span class="badge bg-secondary">{{ forloop.counter }}</span></td>
+                            <td class="fw-semibold">{{ p.nama }}</td>
+                            <td class="text-center">{{ p.ncf }}</td>
+                            <td class="text-center">{{ p.nsf }}</td>
+                            <td class="text-center text-primary fw-bold">{{ p.total }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Belum ada data penilaian.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 mb-5">
+    <div class="col-md-12">
+        <div class="card p-4">
+            <h4 class="fw-bold mb-4">Visualisasi Perbandingan Skor Pelamar</h4>
+            <canvas id="rankingChart" width="400" height="150"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('rankingChart').getContext('2d');
+    
+    // PERBAIKAN DI SINI:
+    const labels = [
+        {% for p in ranking %}
+            "{{ p.nama }}"{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    const dataSkor = [
+        {% for p in ranking %}
+            {{ p.total }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    const rankingChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Skor Profile Matching',
+                data: dataSkor,
+                backgroundColor: 'rgba(13, 110, 253, 0.6)',
+                borderColor: 'rgba(13, 110, 253, 1)',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5 
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

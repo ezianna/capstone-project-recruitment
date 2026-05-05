@@ -1,0 +1,49 @@
+{% extends 'recruitment/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4">
+            <h3 class="fw-bold mb-4 text-center">Pendaftaran Kerja</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nama Lengkap</label>
+                    <input type="text" name="nama" class="form-control" placeholder="Masukkan nama Anda" required>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Posisi Dilamar</label>
+                        <input type="text" name="posisi" class="form-control" placeholder="Contoh: IT Support" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Pendidikan Terakhir</label>
+                        <input type="text" name="pendidikan" class="form-control" placeholder="Contoh: S1 Informatika" required>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                <h5 class="fw-bold mb-3 text-primary">Input Nilai Tes (Skala 1-5)</h5>
+                
+                <div class="row g-3">
+                    {% for k in kriteria_list %}
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">{{ k.nama_kriteria }}</label>
+                        <select name="kriteria_{{ k.id }}" class="form-select" required>
+                            <option value="">-- Pilih Nilai --</option>
+                            <option value="1">1 (Sangat Kurang)</option>
+                            <option value="2">2 (Kurang)</option>
+                            <option value="3">3 (Cukup)</option>
+                            <option value="4">4 (Baik)</option>
+                            <option value="5">5 (Sangat Baik)</option>
+                        </select>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100 mt-5 shadow">Kirim Pendaftaran</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
