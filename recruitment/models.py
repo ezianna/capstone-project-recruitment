@@ -23,3 +23,16 @@ class Penilaian(models.Model):
 
     def __str__(self):
         return f"{self.pelamar.nama} - {self.kriteria.nama_kriteria}"
+    
+class Soal(models.Model):
+    kriteria = models.ForeignKey(Kriteria, on_delete=models.CASCADE)
+    teks_soal = models.TextField()
+    pilihan_a = models.CharField(max_length=200)
+    pilihan_b = models.CharField(max_length=200)
+    pilihan_c = models.CharField(max_length=200)
+    pilihan_d = models.CharField(max_length=200)
+    pilihan_e = models.CharField(max_length=200)
+    kunci_jawaban = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'), ('E', 'E')])
+
+    def __str__(self):
+        return f"[{self.kriteria.nama_kriteria}] {self.teks_soal[:40]}..."

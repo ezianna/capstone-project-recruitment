@@ -1,0 +1,48 @@
+{% extends 'recruitment/base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4 shadow-sm">
+            <h4 class="fw-bold text-primary mb-1">Lembar Ujian CBT</h4>
+            <p class="text-muted">Peserta: <strong class="text-dark">{{ pelamar.nama }}</strong></p>
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                {% for soal in semua_soal %}
+                <div class="mb-4 p-3 border rounded bg-light">
+                    <span class="badge bg-secondary mb-2">{{ soal.kriteria.nama_kriteria }}</span>
+                    <p class="fw-semibold mb-3">{{ forloop.counter }}. {{ soal.teks_soal }}</p>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="soal_{{ soal.id }}" value="A" id="s_{{ soal.id }}_A" required>
+                        <label class="form-check-label" for="s_{{ soal.id }}_A">A. {{ soal.pilihan_a }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="soal_{{ soal.id }}" value="B" id="s_{{ soal.id }}_B">
+                        <label class="form-check-label" for="s_{{ soal.id }}_B">B. {{ soal.pilihan_b }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="soal_{{ soal.id }}" value="C" id="s_{{ soal.id }}_C">
+                        <label class="form-check-label" for="s_{{ soal.id }}_C">C. {{ soal.pilihan_c }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="soal_{{ soal.id }}" value="D" id="s_{{ soal.id }}_D">
+                        <label class="form-check-label" for="s_{{ soal.id }}_D">D. {{ soal.pilihan_d }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="soal_{{ soal.id }}" value="E" id="s_{{ soal.id }}_E">
+                        <label class="form-check-label" for="s_{{ soal.id }}_E">E. {{ soal.pilihan_e }}</label>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert alert-warning">Belum ada soal ujian.</div>
+                {% endfor %}
+                
+                {% if semua_soal %}
+                <button type="submit" class="btn btn-primary btn-lg w-100 shadow mt-3">Kirim Jawaban & Lihat Hasil</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

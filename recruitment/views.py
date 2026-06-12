@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Pelamar, Kriteria, Penilaian
+from .models import Pelamar, Kriteria, Penilaian, Soal
 from django.shortcuts import redirect
 
 def dashboard(request):
@@ -99,3 +99,59 @@ def pendaftaran(request):
         return redirect('ranking') # Setelah daftar, langsung lihat hasil ranking
 
     return render(request, 'recruitment/pendaftaran.html', {'kriteria_list': kriteria_list})
+
+def persiapan_ujian(request):
+    """Fungsi khusus pendaftaran jalur ujian CBT (Tanpa input nilai manual)"""
+    if request.method == 'POST':
+        nama = request.POST.get('nama')
+        posisi = request.POST.get('posisi')
+        pendidikan = request.POST.get('pendidikan')
+        
+        pelamar = Pelamar.objects.create(
+            nama=nama, 
+            posisi_dilamar=posisi, 
+            pendidikan_terakhir=pendidikan
+        )
+        
+        # Simpan ID pelamar di session lalu lempar ke halaman soal
+        request.session['pelamar_id'] = pelamar.id
+        return redirect('ujian')
+
+    return render(request, 'recruitment/persiapan_ujian.html')
+
+def ujian(request):
+    """Fungsi untuk menampilkan soal CBT dan otomatis hitung nilai"""
+    pelamar_id = request.session.get('pelamar_id')
+    if not pelamar_id:
+        return redirect('persiapan_ujian')
+        
+    pelamar = Pelamar.objects.get(id=pelamar_id)
+    semua_soal = Soal.objects.all().select_related('kriteria')
+    kriteria_list = Kriteria.objects.all()
+
+    if request.method == 'POST':
+        skor_benar = {kriteria.id: 0 for kriteria in kriteria_list}
+        
+        # Hitung jawaban benar
+        for soal in semua_soal:
+            jawaban_user = request.POST.get(f'soal_{soal.id}')
+            if jawaban_user == soal.kunci_jawaban:
+                skor_benar[soal.kriteria.id] += 1
+        
+        # Konversi jumlah benar ke Nilai Aktual (Skala 1-5)
+        for kriteria in kriteria_list:
+            jumlah_benar = skor_benar[kriteria.id]
+            # Asumsi tiap kriteria punya maksimal 5 soal. Jika 0, minimal dapat 1.
+            nilai_aktual = max(1, min(5, jumlah_benar)) 
+            
+            Penilaian.objects.create(
+                pelamar=pelamar,
+                kriteria=kriteria,
+                nilai_aktual=nilai_aktual
+            )
+        
+        # Hapus session selesai ujian
+        del request.session['pelamar_id']
+        return redirect('ranking')
+
+    return render(request, 'recruitment/ujian.html', {'semua_soal': semua_soal, 'pelamar': pelamar})
